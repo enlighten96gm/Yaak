@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import Search from "../shared/Search";
-import MyDataPicker from "../shared/DataPicker";
 import Table from "../Table";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { useState } from "react";
+import DatePickerComponent from "../shared/DataPicker";
 
 const MainSection = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -15,7 +15,7 @@ const MainSection = () => {
         <HeadingText>Drives</HeadingText>
         <FilteringArea>
           <Search searchValue={searchValue} setSearchValue={setSearchValue} />
-          <MyDataPicker />
+          <DatePickerComponent />
         </FilteringArea>
         <Table setSearchValue={setSearchValue} searchValue={searchValue} />
       </Wrapper>

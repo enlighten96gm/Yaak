@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { DatePicker } from "@mui/x-date-pickers";
 
-const MyDataPicker = () => {
+const DatePickerComponent = () => {
   const [value, setValue] = useState(null);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const MyDataPicker = () => {
     </DatePickerContainer>
   );
 };
-export default MyDataPicker;
+export default DatePickerComponent;
 
 const DatePickerContainer = styled.div`
   .MuiInputBase-root {
