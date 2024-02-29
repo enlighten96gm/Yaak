@@ -1,12 +1,12 @@
 import React from "react";
-import style from "./progress.less";
+import styled from "styled-components";
 
 export interface ProgressProps {
   percentage?: number;
   strokeWidth?: number;
 }
 
-const Progress: React.FunctionComponent<ProgressProps> = ({
+const Progress: React.FC<ProgressProps> = ({
   strokeWidth = 12,
   percentage = 0,
 }) => {
@@ -26,14 +26,13 @@ const Progress: React.FunctionComponent<ProgressProps> = ({
   return (
     <svg viewBox="0 0 100 100" width={24} height={24}>
       <path
-        className={style.progressTrail}
+        style={{ stroke: "#00a751", strokeLinecap: "round" }}
         d={pathDescription}
         strokeWidth={strokeWidth}
         fillOpacity={0}
       />
 
-      <path
-        className={style.progressPath}
+      <Path
         d={pathDescription}
         strokeWidth={strokeWidth}
         fillOpacity={0}
@@ -44,3 +43,7 @@ const Progress: React.FunctionComponent<ProgressProps> = ({
 };
 
 export default Progress;
+
+const Path = styled.path`
+  stroke: #f1f4f2;
+`;

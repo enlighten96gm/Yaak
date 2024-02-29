@@ -1,111 +1,195 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import useFetch from "../../customHooks/useFetch";
 import { format } from "date-fns";
 import book from "../../assets/images/book.svg";
+import goodSign from "../../assets/images/good.svg";
+import arrowSign from "../../assets/images/arrow.svg";
+import warningSign from "../../assets/images/warning.svg";
+import {
+  DataGridPro,
+  GridColDef,
+  GridCellParams,
+  GridRowsProp,
+} from "@mui/x-data-grid-pro";
+import { DataType } from "../../types";
+import Progress from "../Progress";
 
-export interface DriveData {
-  time: string;
-  partner: string;
-  type: string;
-  vehicle: string;
-  kitID: string;
-  driver: string;
-  instructor: string;
-  status: JSX.Element;
-  data: string;
-  bitrate: string;
+const columns: GridColDef[] = [
+  { field: "time", headerName: "Time" },
+  { field: "partner", headerName: "Partner", sortable: false },
+  { field: "type", headerName: "Type", sortable: false },
+  { field: "vehicle", headerName: "Vehicle", sortable: false },
+  { field: "kitid", headerName: "Kit ID", sortable: false },
+  { field: "driver", headerName: "Driver", sortable: false },
+  { field: "instructor", headerName: "Instructor", sortable: false },
+  {
+    field: "status",
+    headerName: "Status",
+    renderCell: (params) => (
+      <>{params.value ? <img src={goodSign} /> : <img src={arrowSign} />}</>
+    ),
+    sortable: false,
+    width: 95,
+  },
+  {
+    field: "data",
+    headerName: "Data",
+    renderCell: (params) => {
+      const [isCellHovered, setCellHovered] = useState(false);
+      const randomValue = Math.floor(Math.random() * 100) + 1;
+      // I didn't quite understand what value to put in the "date" column. So Yolo =)
+      return (
+        <DataCellWrapper
+          onMouseEnter={() => setCellHovered(true)}
+          onMouseLeave={() => setCellHovered(false)}
+        >
+          {params.value ? (
+            <>
+              {isCellHovered ? (
+                <Progress percentage={randomValue} />
+              ) : (
+                <img src={goodSign} />
+              )}
+            </>
+          ) : (
+            <>
+              {isCellHovered ? (
+                <Progress percentage={randomValue} />
+              ) : (
+                <img src={warningSign} />
+              )}
+            </>
+          )}
+        </DataCellWrapper>
+      );
+    },
+    sortable: false,
+    width: 95,
+  },
+  {
+    field: "bitrate",
+    headerName: "Bitrate",
+    renderCell: (params) => {
+      const [isCellHovered, setCellHovered] = useState(false);
+      return (
+        <div
+          style={{ cursor: "pointer" }}
+          onMouseEnter={() => setCellHovered(true)}
+          onMouseLeave={() => setCellHovered(false)}
+        >
+          {params.value ? (
+            <div
+              style={{
+                backgroundColor: params.value >= 9500 ? "#EAFFE9" : "#FFFAE5",
+                padding: "4px 6px",
+                borderRadius: "8px",
+              }}
+            >
+              {isCellHovered
+                ? params.value
+                : params.value.toString().split("")[0]}{" "}
+              Mbps
+            </div>
+          ) : (
+            "---"
+          )}
+        </div>
+      );
+    },
+    sortable: false,
+    width: 95,
+  },
+  {
+    field: "action",
+    type: "actions",
+    getActions: () => [<img src={book} style={{ cursor: "pointer" }} />],
+    sortable: false,
+    width: 95,
+  },
+];
+
+interface TableProps {
+  setSearchValue: (arg: string) => void;
+  searchValue: string;
 }
 
-const Table = () => {
+const Table: React.FC<TableProps> = ({ setSearchValue, searchValue }) => {
   const { data, error, isFetching } = useFetch();
-  console.log(data, "data");
+
+  const handleCellClick = (params: GridCellParams) => {
+    if (params.field === "action") {
+      const clickedRowId = params.id.toString();
+      setSearchValue(clickedRowId);
+    }
+  };
+
+  if (isFetching) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  const filteredData = data.filter(({ id, partner, dongleId }: DataType) => {
+    const filterTypes = [String(id), String(partner?.name), String(dongleId)];
+
+    const isMatch = filterTypes.some((fieldValue) =>
+      fieldValue.toLowerCase().includes(searchValue.toLowerCase())
+    );
+
+    return isMatch;
+  });
+
+  const rows: GridRowsProp = filteredData.map(
+    ({
+      id,
+      startTimestamp,
+      partner,
+      driverDriveCount,
+      dongleId,
+      driver,
+      instructor,
+      videoStatus,
+      bitRateKbps,
+    }: DataType) => ({
+      id: id,
+      time: format(new Date(startTimestamp), "dd MMM yyyy, HH:mm:ss"),
+      partner: partner ? partner.name : "No Data",
+      type: driverDriveCount >= 189 ? "Expert" : "Student",
+      vehicle: "A-BC 123D",
+      kitid: dongleId,
+      driver: driver ? `${driver.firstname} ${driver.lastname}` : "No Data",
+      instructor: instructor
+        ? `${instructor.firstname} ${instructor.lastname}`
+        : "No Data",
+      status: videoStatus <= 0,
+      data: driverDriveCount <= 189,
+      bitrate: bitRateKbps,
+    })
+  );
 
   return (
-    <StyledTable>
-      <thead>
-        <TableRow>
-          <TableHead>Time</TableHead>
-          <TableHead>Partner</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Vehicle</TableHead>
-          <TableHead>Kit ID</TableHead>
-          <TableHead>Driver</TableHead>
-          <TableHead>Instructor</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Data</TableHead>
-          <TableHead>Bitrate</TableHead>
-          <TableHead />
-        </TableRow>
-      </thead>
-      <tbody>
-        {data.map((drive: any, index) => (
-          <TableRow key={index}>
-            <TableData>
-              {format(new Date(drive.endTimestamp), "dd MMM yyyy, HH:mm:ss")}
-            </TableData>
-            <TableData>{drive.partner ? drive.partner.name : "None"}</TableData>
-            <TableData>Type</TableData>
-            <TableData>Vehicle</TableData>
-            <TableData>{drive.dongleId}</TableData>
-            <TableData>
-              {drive.driver
-                ? `${drive.driver.firstname} ${drive.driver.lastname}`
-                : "None"}
-            </TableData>
-            <TableData>
-              {drive.instructor
-                ? `${drive.instructor.firstname} ${drive.instructor.lastname}`
-                : "None"}
-            </TableData>
-            <TableData>Status</TableData>
-            <TableData>Data</TableData>
-            <TableData>{drive.bitRateKbps}</TableData>
-            <TableData>
-              <Image src={book} />
-            </TableData>
-          </TableRow>
-        ))}
-      </tbody>
-    </StyledTable>
+    <Wrapper>
+      <DataGridPro
+        rows={rows}
+        columns={columns}
+        initialState={{
+          pinnedColumns: { right: ["status", "data", "bitrate", "action"] },
+        }}
+        onCellClick={handleCellClick}
+        hideFooter
+      />
+    </Wrapper>
   );
 };
 
 export default Table;
 
-const StyledTable = styled.table`
-  border-collapse: collapse;
+const Wrapper = styled.div`
   width: 100%;
+  height: 80%;
 `;
 
-const TableRow = styled.tr``;
-
-const StatusIndicator = styled.span`
-  display: inline-block;
-  height: 15px;
-  border-radius: 50%;
-  margin-right: 10px;
-  background-color: ${(props) => props.color};
-`;
-
-const TableData = styled.td`
-  height: 56px;
-  overflow: auto;
-  padding: 18px 16px;
-  text-align: left;
-  font-size: 14px;
-  border-bottom: 1px solid #e3e8e5;
-`;
-
-const TableHead = styled.th`
-  text-align: left;
-  padding: 12px 16px;
-  background-color: #e3e8e5;
-  color: #7d8781;
-  font-size: 14px;
-  font-weight: 500;
-`;
-
-const Image = styled.img`
-  cursor: pointer;
-`;
+const DataCellWrapper = styled.div``;

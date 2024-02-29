@@ -4,20 +4,20 @@ import MyDataPicker from "../shared/DataPicker";
 import Table from "../Table";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { useState } from "react";
 
 const MainSection = () => {
+  const [searchValue, setSearchValue] = useState("");
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Wrapper>
         <HeadingText>Drives</HeadingText>
         <FilteringArea>
-          <Search />
+          <Search searchValue={searchValue} setSearchValue={setSearchValue} />
           <MyDataPicker />
         </FilteringArea>
-
-        <TableWrapper>
-          <Table />
-        </TableWrapper>
+        <Table setSearchValue={setSearchValue} searchValue={searchValue} />
       </Wrapper>
     </LocalizationProvider>
   );
@@ -28,8 +28,8 @@ const Wrapper = styled.div`
   margin: 40px;
   padding: 24px;
   background-color: #ffffff;
-  width: 100%;
   border-radius: 16px;
+  width: 75%;
 `;
 
 const HeadingText = styled.div`
@@ -43,6 +43,7 @@ const FilteringArea = styled.div`
   justify-content: space-between;
   margin: 16px 0px;
   height: 48px;
+  gap: 20px;
 `;
 
 const TableWrapper = styled.div`

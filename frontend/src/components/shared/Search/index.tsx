@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import styled from "styled-components";
 import searchIcon from "../../../assets/images/search.svg";
 
-const Search = () => {
+interface SearchProps {
+  setSearchValue: (arg: string) => void;
+  searchValue: string;
+}
+
+const Search: React.FC<SearchProps> = ({ setSearchValue, searchValue }) => {
   const [inputFocus, setInputFocus] = useState(false);
   const handleFocus = () => {
     setInputFocus(true);
@@ -11,13 +16,20 @@ const Search = () => {
   const handleBlur = () => {
     setInputFocus(false);
   };
+
+  const handleChangeInputValue = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
   return (
     <Wrapper>
       {inputFocus || <Image src={searchIcon} />}
 
       <Input
+        value={searchValue}
         onFocus={handleFocus}
         onBlur={handleBlur}
+        onChange={handleChangeInputValue}
         type="text"
         placeholder={
           inputFocus
@@ -35,7 +47,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 592px;
+  width: 50%;
   border: 1px solid #e3e8e5;
   border-radius: 8px;
   padding: 0 16px;

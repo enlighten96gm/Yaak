@@ -2,10 +2,30 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import driver from "../../assets/images/driver.svg";
 import settings from "../../assets/images/settings.svg";
+import logo from "../../assets/images/yaak_logo.svg";
+import collapse from "../../assets/images/collapse.svg";
+import { useState } from "react";
 
 const NavigationSection = () => {
+  const [navigationViewState, setNavigationViewState] = useState(true);
+
+  const handleSwitchNavigationView = () => {
+    setNavigationViewState((value) => !value);
+  };
+
   return (
-    <Wrapper>
+    <Wrapper property={navigationViewState}>
+      <LogoContainer>
+        <img src={logo} />
+        <img
+          style={{
+            cursor: "pointer",
+            transform: navigationViewState ? "rotate(0deg)" : "rotate(180deg)",
+          }}
+          src={collapse}
+          onClick={handleSwitchNavigationView}
+        />
+      </LogoContainer>
       <Nav>
         <NavItem to="/drives" end>
           <Image src={driver} />
@@ -21,6 +41,23 @@ const NavigationSection = () => {
 };
 
 export default NavigationSection;
+
+const Wrapper = styled.div<{ property: boolean }>`
+  position: relative;
+  transition: 0.5s;
+  right: ${({ property }) => (property ? "0px" : "13%")};
+  height: 95vh;
+  width: 14%;
+  border-right: 1px solid #e3e8e5;
+  padding: 16px;
+`;
+
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 65px;
+`;
 
 const Nav = styled.nav`
   display: flex;
@@ -46,12 +83,6 @@ const NavItem = styled(NavLink).attrs({ className: getNavLinkClass })`
     background-color: #eaffe9;
     color: #00a751;
   }
-`;
-
-const Wrapper = styled.div`
-  height: 100%;
-  width: 272px;
-  border-right: 1px solid #e3e8e5;
 `;
 
 const Image = styled.img``;
