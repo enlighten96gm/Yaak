@@ -33,7 +33,7 @@ const MainSection = () => {
 export default MainSection;
 
 const Wrapper = styled.div`
-  margin: 40px;
+  margin: 40px auto;
   padding: 24px;
   background-color: #ffffff;
   border-radius: 16px;

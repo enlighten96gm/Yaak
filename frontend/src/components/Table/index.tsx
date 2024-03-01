@@ -21,7 +21,26 @@ const columns: GridColDef[] = [
   { field: "type", headerName: "Type", sortable: false },
   { field: "vehicle", headerName: "Vehicle", sortable: false },
   { field: "kitid", headerName: "Kit ID", sortable: false },
-  { field: "driver", headerName: "Driver", sortable: false },
+  {
+    field: "driver",
+    headerName: "Driver",
+    sortable: false,
+    renderCell: (params) => (
+      <div>
+        {params.value ? (
+          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <img
+              style={{ width: "15px", height: "15px", borderRadius: "100%" }}
+              src={params.value.profileImageURL}
+            />
+            {params.value.firstname} {params.value.lastname}
+          </div>
+        ) : (
+          "---"
+        )}
+      </div>
+    ),
+  },
   { field: "instructor", headerName: "Instructor", sortable: false },
   {
     field: "status",
@@ -177,7 +196,8 @@ const Table: React.FC<TableProps> = ({
       type: driverDriveCount >= 189 ? "Expert" : "Student",
       vehicle: "A-BC 123D",
       kitid: dongleId,
-      driver: driver ? `${driver.firstname} ${driver.lastname}` : "No Data",
+      // driver: driver ? `${driver.firstname} ${driver.lastname}` : "No Data",
+      driver: driver,
       instructor: instructor
         ? `${instructor.firstname} ${instructor.lastname}`
         : "No Data",
