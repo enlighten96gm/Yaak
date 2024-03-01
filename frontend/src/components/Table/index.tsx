@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import useFetch from "../../customHooks/useFetch";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import book from "../../assets/images/book.svg";
 import goodSign from "../../assets/images/good.svg";
 import arrowSign from "../../assets/images/arrow.svg";
@@ -112,9 +112,14 @@ const columns: GridColDef[] = [
 interface TableProps {
   setSearchValue: (arg: string) => void;
   searchValue: string;
+  dataPickerValue: null | string;
 }
 
-const Table: React.FC<TableProps> = ({ setSearchValue, searchValue }) => {
+const Table: React.FC<TableProps> = ({
+  setSearchValue,
+  searchValue,
+  dataPickerValue,
+}) => {
   const { data, error, isFetching } = useFetch();
 
   const handleCellClick = (params: GridCellParams) => {
@@ -132,15 +137,27 @@ const Table: React.FC<TableProps> = ({ setSearchValue, searchValue }) => {
     return <div>Error: {error}</div>;
   }
 
-  const filteredData = data.filter(({ id, partner, dongleId }: DataType) => {
-    const filterTypes = [String(id), String(partner?.name), String(dongleId)];
+  const filteredData = data.filter(
+    ({ id, partner, dongleId, startTimestamp }: DataType) => {
+      const filterTypes = [String(id), String(partner?.name), String(dongleId)];
 
-    const isMatch = filterTypes.some((fieldValue) =>
-      fieldValue.toLowerCase().includes(searchValue.toLowerCase())
-    );
+      const isSearchMatch =
+        searchValue &&
+        filterTypes.some((fieldValue) =>
+          fieldValue.toLowerCase().includes(searchValue.toLowerCase())
+        );
 
-    return isMatch;
-  });
+      const isDateMatch =
+        dataPickerValue &&
+        new Date(dataPickerValue).getDate() ===
+          new Date(parseISO(startTimestamp)).getDate();
+
+      return (
+        (searchValue ? isSearchMatch : true) &&
+        (dataPickerValue ? isDateMatch : true)
+      );
+    }
+  );
 
   const rows: GridRowsProp = filteredData.map(
     ({

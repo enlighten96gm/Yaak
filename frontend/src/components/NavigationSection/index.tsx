@@ -7,7 +7,7 @@ import collapse from "../../assets/images/collapse.svg";
 import { useState } from "react";
 
 const NavigationSection = () => {
-  const [navigationViewState, setNavigationViewState] = useState(true);
+  const [navigationViewState, setNavigationViewState] = useState(false);
 
   const handleSwitchNavigationView = () => {
     setNavigationViewState((value) => !value);
@@ -16,26 +16,31 @@ const NavigationSection = () => {
   return (
     <Wrapper property={navigationViewState}>
       <LogoContainer>
-        <img src={logo} />
+        <img
+          src={logo}
+          style={{ display: navigationViewState ? "none" : "block" }}
+        />
         <img
           style={{
             cursor: "pointer",
-            transform: navigationViewState ? "rotate(0deg)" : "rotate(180deg)",
+            transform: navigationViewState ? "rotate(180deg)" : "rotate(0deg)",
           }}
           src={collapse}
           onClick={handleSwitchNavigationView}
         />
       </LogoContainer>
-      <Nav>
-        <NavItem to="/drives" end>
-          <Image src={driver} />
-          Drives
-        </NavItem>
-        <NavItem to="/settings" end>
-          <Image src={settings} />
-          Settings
-        </NavItem>
-      </Nav>
+      {navigationViewState || (
+        <Nav>
+          <NavItem to="/drives" end>
+            <Image src={driver} />
+            Drives
+          </NavItem>
+          <NavItem to="/settings" end>
+            <Image src={settings} />
+            Settings
+          </NavItem>
+        </Nav>
+      )}
     </Wrapper>
   );
 };
@@ -43,13 +48,11 @@ const NavigationSection = () => {
 export default NavigationSection;
 
 const Wrapper = styled.div<{ property: boolean }>`
-  position: relative;
   transition: 0.5s;
-  right: ${({ property }) => (property ? "0px" : "13%")};
   height: 95vh;
-  width: 14%;
   border-right: 1px solid #e3e8e5;
   padding: 16px;
+  width: ${({ property }) => (property ? "1%" : "14%")};
 `;
 
 const LogoContainer = styled.div`

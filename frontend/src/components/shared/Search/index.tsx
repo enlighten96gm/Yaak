@@ -1,45 +1,45 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, memo, useState } from "react";
 import styled from "styled-components";
 import searchIcon from "../../../assets/images/search.svg";
+import { SearchProps } from "../../../types";
 
-interface SearchProps {
-  setSearchValue: (arg: string) => void;
-  searchValue: string;
-}
+const Search: React.FC<SearchProps> = memo(
+  ({ setSearchValue, searchValue }) => {
+    console.log("search");
 
-const Search: React.FC<SearchProps> = ({ setSearchValue, searchValue }) => {
-  const [inputFocus, setInputFocus] = useState(false);
-  const handleFocus = () => {
-    setInputFocus(true);
-  };
+    const [inputFocus, setInputFocus] = useState(false);
+    const handleFocus = () => {
+      setInputFocus(true);
+    };
 
-  const handleBlur = () => {
-    setInputFocus(false);
-  };
+    const handleBlur = () => {
+      setInputFocus(false);
+    };
 
-  const handleChangeInputValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-  };
+    const handleChangeInputValue = (e: ChangeEvent<HTMLInputElement>) => {
+      setSearchValue(e.target.value);
+    };
 
-  return (
-    <Wrapper>
-      {inputFocus || <Image src={searchIcon} />}
+    return (
+      <Wrapper>
+        {inputFocus || <Image src={searchIcon} />}
 
-      <Input
-        value={searchValue}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        onChange={handleChangeInputValue}
-        type="text"
-        placeholder={
-          inputFocus
-            ? ""
-            : "Search partners, drive types, vehicles, kit IDs, and drive IDs suggestion"
-        }
-      />
-    </Wrapper>
-  );
-};
+        <Input
+          value={searchValue}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onChange={handleChangeInputValue}
+          type="text"
+          placeholder={
+            inputFocus
+              ? ""
+              : "Search partners, drive types, vehicles, kit IDs, and drive IDs suggestion"
+          }
+        />
+      </Wrapper>
+    );
+  }
+);
 
 export default Search;
 

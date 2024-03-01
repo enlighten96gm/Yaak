@@ -8,6 +8,7 @@ import DatePickerComponent from "../shared/DataPicker";
 
 const MainSection = () => {
   const [searchValue, setSearchValue] = useState("");
+  const [dataPickerValue, setDataPickerValue] = useState<string>("");
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -15,9 +16,16 @@ const MainSection = () => {
         <HeadingText>Drives</HeadingText>
         <FilteringArea>
           <Search searchValue={searchValue} setSearchValue={setSearchValue} />
-          <DatePickerComponent />
+          <DatePickerComponent
+            dataPickerValue={dataPickerValue}
+            setDataPickerValue={setDataPickerValue}
+          />
         </FilteringArea>
-        <Table setSearchValue={setSearchValue} searchValue={searchValue} />
+        <Table
+          setSearchValue={setSearchValue}
+          searchValue={searchValue}
+          dataPickerValue={dataPickerValue}
+        />
       </Wrapper>
     </LocalizationProvider>
   );
@@ -30,6 +38,9 @@ const Wrapper = styled.div`
   background-color: #ffffff;
   border-radius: 16px;
   width: 75%;
+  @media (max-width: 1100px) {
+    width: 65%;
+  }
 `;
 
 const HeadingText = styled.div`

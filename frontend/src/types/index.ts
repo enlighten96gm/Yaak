@@ -19,3 +19,13 @@ export interface DataType {
   data: number;
   bitRateKbps: string;
 }
+
+export interface SearchProps {
+  setSearchValue: (arg: string) => void;
+  searchValue: string;
+}
+
+export interface DataPickerProps {
+  dataPickerValue: string;
+  setDataPickerValue: (arg: string) => void;
+}
