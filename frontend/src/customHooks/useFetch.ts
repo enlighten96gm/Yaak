@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 const baseURL = "http://localhost:3100/api/sessions";
 
+// Optimization: store, local storage, indexedDB etc...
 const useFetch = () => {
   const [data, setData] = useState([]);
   const [error, setError] = useState("");

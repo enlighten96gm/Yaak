@@ -56,9 +56,3 @@ const FilteringArea = styled.div`
   height: 48px;
   gap: 20px;
 `;
-
-const TableWrapper = styled.div`
-  width: 100%;
-  height: 80%;
-  overflow: auto;
-`;

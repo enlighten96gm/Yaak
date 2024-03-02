@@ -9,14 +9,20 @@ import {
 } from "react-router-dom";
 import Settings from "./components/Settings";
 
+const routes = [
+  { path: "/drives", element: <MainSection /> },
+  { path: "/settings", element: <Settings /> },
+];
+
 const App = () => {
   return (
     <Wrapper>
       <Router>
         <Navigation />
         <Routes>
-          <Route path="/drives" element={<MainSection />} />
-          <Route path="/settings" element={<Settings />} />
+          {routes.map(({ path, element }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
           <Route path="/" element={<Navigate replace to="/drives" />} />
         </Routes>
       </Router>

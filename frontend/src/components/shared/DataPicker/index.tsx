@@ -5,7 +5,6 @@ import { memo } from "react";
 
 const DatePickerComponent: React.FC<DataPickerProps> = memo(
   ({ dataPickerValue, setDataPickerValue }) => {
-    console.log("data");
     return (
       <DatePickerContainer>
         <DatePicker

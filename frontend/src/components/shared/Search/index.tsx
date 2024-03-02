@@ -5,8 +5,6 @@ import { SearchProps } from "../../../types";
 
 const Search: React.FC<SearchProps> = memo(
   ({ setSearchValue, searchValue }) => {
-    console.log("search");
-
     const [inputFocus, setInputFocus] = useState(false);
     const handleFocus = () => {
       setInputFocus(true);
